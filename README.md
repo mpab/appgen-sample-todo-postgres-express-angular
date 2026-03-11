@@ -3,8 +3,8 @@
 Quick Start
 
 ```sh
-./docker/db-recreate-seed
-./docker-app-start
+./docker/db-seed
+./docker/app-start
 ```
 
 UI <http://localhost:4200>  
@@ -13,18 +13,26 @@ API <http://localhost:3000/api-docs>
 ## Application Structure
 
 ```text
-├── backend
-│   ├── api             # Business logic and API
-│   └── database        # Database layer
+configure/
+├── csv_raw             # CSV source data
+│   └── PascalCase.csv
+├── generate-schema     # generate schema from raw CSV
+├── schema_csv          # CSV schema (seed data)
+│   └── snake_case.csv
+├── schema_json         # JSON schema
+│   └── snake_case.json
+├── using-csv           # use to generate the application
+└── using-schema        # use to generate the application
+
+backend
+├── api                 # Business logic and API
+└── database            # Database layer
+
 ├─ database
 │  ├── csv_seed         # seed data
 │  ├── scripts          # db scripts
-│  └── sql              # SQL statements used by the db scripts
-├── configure
-│   ├── csv             # CSV source data
-│   ├── using-csv       # use to generate the application, schema, and seed data
-│   └── schema          # JSON data schema
-│   └── using-schema    # use to generate the application, and seed data
+│  └── sql              # SQL statements used by the db 
+
 ├── docker              # docker scripts and helpers
 ├── frontend            # Presentation layer
 └── pgdata              # Database mount point, contains the DB data
@@ -52,19 +60,19 @@ calls docker compose using the default yaml file
 ./docker/app-start
 
 # starts the api and db
-./docker/app-start-backend
+./docker/backend-start
 
 # starts the ui
-./docker/app-start-frontend
+./docker/frontend-start
 
 # stops the app
 ./docker/app-stop
 
 # stops the api and db
-./docker/app-stop-backend
+./docker/backend-stop
 
 # stops the ui
-./docker/app-stop-frontend
+./docker/frontend-stop
 
 # used by ./docker/-compose
 compose-vol-service.yaml
@@ -74,11 +82,11 @@ compose-vol-shared.yaml
 # e.g. ./docker/db sh
 ./docker/db
 
-# opens the psql tertminal in the db docker
+# opens the psql terminal in the db docker
 ./docker/db-psql
 
 # (re) creates the db tables and seeds the tables with CSV data
-./docker/db-recreate-seed
+./docker/db-seed
 
 # starts the db container
 ./docker/db-start
@@ -121,14 +129,14 @@ app-stop
 ./docker/db-psql
 ```
 
-```postgres
---- get tables
+```sql
+-- get tables
 \dt
 -- get sequence tables
 \ds
 ```
 
-### Database Admin (adminer)'
+### Database Admin (adminer)
 
 <http://localhost:8080>
 
@@ -140,5 +148,5 @@ app-stop
 
 ## Generated via the following templates
 
-- frontend: ng-20.0.3-mui
-- backend:  express-js-postgres
+- frontend: ng_20_0_3_mui
+- backend:  express_js_postgres
